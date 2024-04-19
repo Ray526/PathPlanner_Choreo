@@ -16,32 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.54609539712353,
-        "y": 6.745980128731558
+        "x": 2.37,
+        "y": 5.55
       },
       "prevControl": {
-        "x": 4.470742894839699,
-        "y": 7.062825062440187
-      },
-      "nextControl": {
-        "x": 6.576859073000659,
-        "y": 6.442272974232047
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.848666424864946,
-        "y": 5.773442417070284
-      },
-      "prevControl": {
-        "x": 6.848666424864946,
-        "y": 5.773442417070284
+        "x": 1.37,
+        "y": 5.55
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SP-Y2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -59,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "MiddleStarting",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

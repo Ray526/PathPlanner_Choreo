@@ -4,13 +4,17 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
+import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoTrajectory;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,20 +46,38 @@ public class Robot extends TimedRobot {
 
   SendableChooser<String> m_Alliance = new SendableChooser<>();
   SendableChooser<String> m_AutoCommand = new SendableChooser<>();
-  SendableChooser<Command> m_pathPlanner = new SendableChooser<>();
+  SendableChooser<Command> m_PathPlanner = new SendableChooser<>();
+  SendableChooser<String> m_ChoreoChooser = new SendableChooser<>();
+  Map<String, ChoreoTrajectory> m_ChoreoTrajectories = new HashMap<>();
 
   @Override
   public void robotInit() {
+
+    ChoreoTrajectory traj;
+
+    Field2d m_field = new Field2d();
+
+    traj = Choreo.getTrajectory("Trajectory");
+
+    m_field.getObject("traj").setPoses(
+      traj.getInitialPose(), traj.getFinalPose()
+    );
+    m_field.getObject("trajPoses").setPoses(
+      traj.getPoses()
+    );
+
+    SmartDashboard.putData(m_field);
     
-    configurePathPlannerCommand(m_upper);
+    configurePathPlannerCommand();
     
     m_Alliance.setDefaultOption("RED", "RED");
     m_Alliance.addOption("BLUE", "BLUE");
     m_Alliance.addOption("PATHPLANNER", "PATHPLANNER");
+    m_Alliance.addOption("CHOREO", "CHOREO");
 
-    m_pathPlanner = AutoBuilder.buildAutoChooser("PathPlanner");
+    m_PathPlanner = AutoBuilder.buildAutoChooser("PathPlanner");
 
-    m_pathPlanner.setDefaultOption("", m_autonomousCommand);
+    m_PathPlanner.setDefaultOption("", m_autonomousCommand);
 
     // left=L mid=M right=R base=B red=r blue=b   combination -> initial pos(L,M,B)+base or not(B or N)+preload and note place(PXaYb,(a=1,2,3... , b=1,2,3...))+how many notes(xn, x=1, 2, 3...)+red or blue(r,b)
     // 1 note
@@ -75,15 +97,26 @@ public class Robot extends TimedRobot {
     // 4 note
     m_AutoCommand.addOption("MBPX2X1X34n", "MBPX2X1X34n");
 
+    // Choreo
+    // 添加ChoreoTrajectory到m_ChoreoTrajectories映射中
+    m_ChoreoTrajectories.put("F1B", Choreo.getTrajectory("F1"));
+    m_ChoreoTrajectories.put("F1B", Choreo.getTrajectory("F1B"));
+
+    // 將ChoreoTrajectory的名稱添加到m_ChoreoChooser中
+    for (String name : m_ChoreoTrajectories.keySet()) {
+      m_ChoreoChooser.addOption(name, name);
+    }
+
     SmartDashboard.putData("Alliance Team", m_Alliance);
     SmartDashboard.putData("Auto Path", m_AutoCommand);
-    SmartDashboard.putData("PATHPLANNER", m_pathPlanner);
+    SmartDashboard.putData("PATHPLANNER", m_PathPlanner);
+    SmartDashboard.putData("Choreo Trajectories", m_ChoreoChooser);
   }
 
-  public void configurePathPlannerCommand(UpperSub s_Upper) {
-    NamedCommands.registerCommand("GROUND", new AutoUpper(s_Upper, UpperState.GROUND));
-    NamedCommands.registerCommand("SPEAKER", new AutoUpper(s_Upper, UpperState.BASE));
-    NamedCommands.registerCommand("SHOOT", new AutoUpper(s_Upper, UpperState.SHOOT));
+  public void configurePathPlannerCommand() {
+    NamedCommands.registerCommand("GROUND", new AutoUpper(m_upper, UpperState.GROUND));
+    NamedCommands.registerCommand("SPEAKER", new AutoUpper(m_upper, UpperState.BASE));
+    NamedCommands.registerCommand("SHOOT", new AutoUpper(m_upper, UpperState.SHOOT));
   }
 
   @Override
@@ -199,7 +232,12 @@ public class Robot extends TimedRobot {
         }
         break;
       case "PATHPLANNER":
-        m_autonomousCommand = m_pathPlanner.getSelected();
+        m_autonomousCommand = m_PathPlanner.getSelected();
+
+      case "CHOREO":
+        String selectedTrajectoryName = m_ChoreoChooser.getSelected();
+        ChoreoTrajectory selectedTrajectory = m_ChoreoTrajectories.get(selectedTrajectoryName);
+        // 使用選擇的ChoreoTrajectory對象執行自動模式邏輯
     } 
 
     if (m_autonomousCommand != null) {
