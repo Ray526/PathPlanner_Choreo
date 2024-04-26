@@ -67,7 +67,7 @@ public class SwerveModule extends SubsystemBase {
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
     desiredState = OnboardModuleState.optimize(desiredState, getState().angle);
   
-    Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.maxSpeed * 0.01)) 
+    Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.maxModuleSpeed * 0.01)) 
       ? lastAngle
       : desiredState.angle;
 
@@ -81,7 +81,7 @@ public class SwerveModule extends SubsystemBase {
     lastAngle = angle;
 
     if(isOpenLoop) {
-      double percentOutput = desiredState.speedMetersPerSecond / Constants.SwerveConstants.maxSpeed;
+      double percentOutput = desiredState.speedMetersPerSecond / Constants.SwerveConstants.maxModuleSpeed;
       percentOutput = MathUtility.clamp(percentOutput, -1, 1);
       driveMotor.set(percentOutput);
     } else {

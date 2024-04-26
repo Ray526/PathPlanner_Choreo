@@ -44,14 +44,14 @@ public class AutoSwerve extends Command{
     @Override
     public void execute() {
         if(Math.abs(swerve.getPose().getY() - YStart) >= XWindup) {
-            if(oneTimeX) X = xyPID.calculate(x - swerve.getPose().getX());
-            else oneTimeX = true;
+            if(oneTimeX==true) X = xyPID.calculate(x - swerve.getPose().getX());
+            else oneTimeX = true; X = xyPID.calculate(x - swerve.getPose().getX());
         }else X = 0;
         if(Math.abs(swerve.getPose().getX() - XStart) >= YWindup) {
-            if(oneTimeY) Y = xyPID.calculate(y - swerve.getPose().getY());
-            else oneTimeY = true;
+            if(oneTimeY==true) Y = xyPID.calculate(y - swerve.getPose().getY());
+            else oneTimeY = true; Y = xyPID.calculate(y - swerve.getPose().getY());
         }else Y = 0;
-        trans2d = new Translation2d(X*0.8, Y*0.8);
+        trans2d = new Translation2d(X, Y);
         rotate2d =  -zPID.calculate(z - swerve.getPose().getRotation().getRotations());
         swerve.drive(trans2d, rotate2d, true, false);
     }
