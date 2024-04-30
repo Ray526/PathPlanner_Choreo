@@ -107,6 +107,8 @@ public final class Constants {
     /* Swerve Profiling Values */
     public static final double maxModuleSpeed = 4.5; // M/S
     public static final double maxAngularVelocity = 13.5; // meters per second
+    public static final double maxModuleAccleration = 5;
+    public static final double maxAngularAccleration = 5.0;
 
     /* Neutral Modes */
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
@@ -166,8 +168,8 @@ public final class Constants {
     public static final Translation2d RRModuleOffset = new Translation2d(-0.4, -0.4);
 
     public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-      new PIDConstants(5.0, 0, 0), // Translation constants 
-      new PIDConstants(5.0, 0, 0), // Rotation constants 
+      new PIDConstants(0.05, 0, 0), // Translation constants 
+      new PIDConstants(0.05, 0, 0), // Rotation constants 
       maxModuleSpeed, 
       LFModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module) 
       new ReplanningConfig()

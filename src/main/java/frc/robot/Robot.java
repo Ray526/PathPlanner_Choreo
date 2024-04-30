@@ -9,86 +9,32 @@ package frc.robot;
 // import java.util.HashMap;
 // import java.util.Map;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-// import frc.robot.Constants.UpperState;
 import frc.robot.Constants.robotConstants;
-// import frc.robot.commands.AutoUpper;
 import frc.robot.commands.TeleopSwerve;
-// import frc.robot.commands.TeleopUpper;
 import frc.robot.subsystems.Swerve;
-// import frc.robot.subsystems.UpperSub;
-// import frc.robot.subsystems.VisionSub;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
+  private RobotContainer m_robotContainer;
+
   private final Swerve m_Swerve = new Swerve();
-  // private final UpperSub m_upper = new UpperSub();
-  // private final VisionSub m_vision = new VisionSub();
 
   private final XboxController driverController = new XboxController(robotConstants.DriverControllerID);
 
   private final TeleopSwerve teleopSwerve = new TeleopSwerve(m_Swerve, driverController);
-  // private final TeleopUpper teleopUpper = new TeleopUpper(m_upper, driverController);
-
-  public static String alliance;
-
-  SendableChooser<String> m_Alliance = new SendableChooser<>();
-  SendableChooser<Command> m_PathPlanner = new SendableChooser<>();
 
   @Override
   public void robotInit() {
-
-    // ChoreoTrajectory traj;
-
-    // Field2d m_field = new Field2d();
-
-    // traj = Choreo.getTrajectory("Trajectory");
-
-    // m_field.getObject("traj").setPoses(
-    //   traj.getInitialPose(), traj.getFinalPose()
-    // );
-    // m_field.getObject("trajPoses").setPoses(
-    //   traj.getPoses()
-    // );
-
-    // SmartDashboard.putData(m_field);
-    
-    configurePathPlannerCommand();
-
-    m_PathPlanner = AutoBuilder.buildAutoChooser("PathPlanner");
-    
-    m_Alliance.setDefaultOption("RED", "RED");
-    m_Alliance.addOption("BLUE", "BLUE");
-    m_Alliance.addOption("PATHPLANNER", "PATHPLANNER");
-
-    m_PathPlanner.setDefaultOption("", m_autonomousCommand);
-
-    SmartDashboard.putData("Alliance Team", m_Alliance);
-    SmartDashboard.putData("PATHPLANNER", m_PathPlanner);
-  }
-
-  public void configurePathPlannerCommand() {
-    // NamedCommands.registerCommand("GROUND", new AutoUpper(m_upper, UpperState.GROUND));
-    // NamedCommands.registerCommand("SPEAKER", new AutoUpper(m_upper, UpperState.BASE));
-    // NamedCommands.registerCommand("SHOOT", new AutoUpper(m_upper, UpperState.SHOOT));
+    m_robotContainer = new RobotContainer();
   }
 
   @Override
   public void robotPeriodic() {
-    alliance = m_Alliance.getSelected();
-    // X = m_X.getSelected();
-    // Y = m_Y.getSelected();
-    // Z = m_Z.getSelected();
-
     CommandScheduler.getInstance().run();
   }
 
@@ -108,19 +54,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     robotConstants.mode = "AUTO";
-    switch(alliance){
-      case "RED":
-        System.out.println("Not This ONE!!!");
-      case "BLUE":
-        System.out.println("Not This ONE!!!");
-      case "PATHPLANNER":
-        m_autonomousCommand = m_PathPlanner.getSelected();
-    } 
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
-    } else {
-      System.out.println("U don't choose the autos!!!");
     }
   }
 
@@ -148,9 +86,7 @@ public class Robot extends TimedRobot {
   public void teleopExit() {}
 
   @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
-  }
+  public void testInit() {}
 
   @Override
   public void testPeriodic() {}

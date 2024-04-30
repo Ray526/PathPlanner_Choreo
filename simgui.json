@@ -1,7 +1,10 @@
 {
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Alliance Team": "String Chooser",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/PATHPLANNER": "String Chooser"
     }
   },
   "NetworkTables Info": {

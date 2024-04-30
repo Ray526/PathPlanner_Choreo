@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -33,7 +32,10 @@ public class Swerve extends SubsystemBase {
 
   private SwerveDriveOdometry swerveOdometry;
   public SwerveModule[] mSwerveMods;
+
   private Field2d field = new Field2d();
+
+  private double rate;
 
   private SwerveDriveKinematics kinematics;
 
@@ -60,7 +62,6 @@ public class Swerve extends SubsystemBase {
     );
 
     swerveOdometry = new SwerveDriveOdometry(kinematics, getYaw(), getPositions());
-
       AutoBuilder.configureHolonomic(
         this::getPose, 
         this::resetPose, 
@@ -122,10 +123,6 @@ public class Swerve extends SubsystemBase {
     swerveOdometry.resetPosition(getYaw(), getPositions(), pose);
   }
 
-  public ChassisSpeeds getSpeeds() {
-    return kinematics.toChassisSpeeds(getStates());
-  }
-
   public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
     driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPose().getRotation()));
   }
@@ -137,8 +134,8 @@ public class Swerve extends SubsystemBase {
     setModuleStates(targetStates);
   }
 
-  public ChassisSpeeds getCurrentSpeeds() {
-    return kinematics.toChassisSpeeds(getStates());
+  public ChassisSpeeds getSpeeds() {
+  return kinematics.toChassisSpeeds(getStates());
   }
 
   public SwerveModuleState[] getStates() {
@@ -165,44 +162,41 @@ public class Swerve extends SubsystemBase {
     // gyro4.setYaw(0);
   }
 
-  public void setGyro(double pos) {
-    gyro1.setYaw(pos);
+  public void setGyro(Rotation2d pos) {
+    gyro1.setYaw(pos.getDegrees());
     // gyro2.setYaw(pos);
     // gyro3.setYaw(pos);
     // gyro4.setYaw(pos);
   }
 
   public Rotation2d getYaw(){
-    StatusSignal<Double> gyro1Yaw = gyro1.getYaw();
+    // StatusSignal<Double> gyro1Yaw = gyro1.getYaw();
     // StatusSignal<Double> gyro2Yaw = gyro2.getYaw();
     // StatusSignal<Double> gyro3Yaw = gyro3.getYaw();
     // StatusSignal<Double> gyro4Yaw = gyro4.getYaw();
-    double averageAngle = (gyro1Yaw.getValue()
+    // double averageAngle = (gyro1Yaw.getValue()
     //  + gyro2Yaw.getValue()
     //  + gyro3Yaw.getValue()
     //  + gyro4Yaw.getValue()
-     )
+    //  )
       // / 4
      ;
-    return (Constants.SwerveConstants.invertGyro) ? Rotation2d.fromDegrees(360 - averageAngle) : Rotation2d.fromDegrees(averageAngle);
+    // return (Constants.SwerveConstants.invertGyro) ? Rotation2d.fromDegrees(360 - averageAngle) : Rotation2d.fromDegrees(averageAngle);
+    return Rotation2d.fromDegrees(gyro1.getYaw().getValue());
   } 
 
   @Override
   public void periodic() {
     swerveOdometry.update(getYaw(), getPositions());
+    field.setRobotPose(getPose());
 
+    SmartDashboard.putData("Field", field);
     SmartDashboard.putNumber("gyro ", getYaw().getDegrees());
-
-    // for (SwerveModule mod : mSwerveMods) {
-    //   SmartDashboard.putNumber(
-    //       "Mod " + mod.moduleNumber + " Cancoder", mod.getAngle().getRotations());
-
-    //   SmartDashboard.putNumber(
-    //       "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
-    // }
-
     SmartDashboard.putNumber("SO_X", getPose().getX());
     SmartDashboard.putNumber("SO_Y", getPose().getY());
     SmartDashboard.putNumber("SO_Rotation", getPose().getRotation().getRotations());
+
+    rate = Math.max(gyro1.getAngularVelocityZWorld().getValueAsDouble(), rate);
+    SmartDashboard.putNumber("rate", rate);
   }
 }
