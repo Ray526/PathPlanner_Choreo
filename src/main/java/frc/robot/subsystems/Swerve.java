@@ -31,9 +31,10 @@ public class Swerve extends SubsystemBase {
   // private final Pigeon2 gyro4;
 
   private SwerveDriveOdometry swerveOdometry;
+
   public SwerveModule[] mSwerveMods;
 
-  private Field2d field = new Field2d();
+  private Field2d m_field = new Field2d();
 
   private double rate;
 
@@ -70,7 +71,7 @@ public class Swerve extends SubsystemBase {
         Constants.SwerveConstants.pathFollowerConfig,
         () -> {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
+            // This will flip the path being followed to the red side of the m_field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
   
             var alliance = DriverStation.getAlliance();
@@ -82,18 +83,11 @@ public class Swerve extends SubsystemBase {
         this
       );
 
-    // Set up custom logging to add the current path to a field 2d widget
-    PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+    // Set up custom logging to add the current path to a m_field 2d widget
+    PathPlannerLogging.setLogActivePathCallback((poses) -> m_field.getObject("path").setPoses(poses));
 
-    SmartDashboard.putData("Field", field);
+    SmartDashboard.putData("Field", m_field);
   }
-
-  public static SwerveModulePosition[] pos = {
-    new SwerveModulePosition(0, new Rotation2d(0)),
-    new SwerveModulePosition(0, new Rotation2d(0)),
-    new SwerveModulePosition(0, new Rotation2d(0)),
-    new SwerveModulePosition(0, new Rotation2d(0))
-  };
 
   public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
     SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(
@@ -180,7 +174,7 @@ public class Swerve extends SubsystemBase {
     //  + gyro4Yaw.getValue()
     //  )
       // / 4
-     ;
+     
     // return (Constants.SwerveConstants.invertGyro) ? Rotation2d.fromDegrees(360 - averageAngle) : Rotation2d.fromDegrees(averageAngle);
     return Rotation2d.fromDegrees(gyro1.getYaw().getValue());
   } 
@@ -188,9 +182,9 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     swerveOdometry.update(getYaw(), getPositions());
-    field.setRobotPose(getPose());
+    m_field.setRobotPose(getPose());
 
-    SmartDashboard.putData("Field", field);
+    SmartDashboard.putData("Field", m_field);
     SmartDashboard.putNumber("gyro ", getYaw().getDegrees());
     SmartDashboard.putNumber("SO_X", getPose().getX());
     SmartDashboard.putNumber("SO_Y", getPose().getY());
@@ -198,5 +192,6 @@ public class Swerve extends SubsystemBase {
 
     rate = Math.max(gyro1.getAngularVelocityZWorld().getValueAsDouble(), rate);
     SmartDashboard.putNumber("rate", rate);
+    m_field.setRobotPose(swerveOdometry.getPoseMeters());
   }
 }

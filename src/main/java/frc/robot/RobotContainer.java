@@ -28,21 +28,25 @@ public class RobotContainer {
 
   private final XboxController controller = new XboxController(robotConstants.DriverControllerID);
 
-  private final Swerve swerve = new Swerve();
-  private final TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
+  private final Swerve m_swerve = new Swerve();
+  private final TeleopSwerve teleopSwerve = new TeleopSwerve(m_swerve, controller);
 
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
   public RobotContainer() {
+    
     configureBindings();
 
-    swerve.setDefaultCommand(teleopSwerve);
+    m_swerve.setDefaultCommand(teleopSwerve);
 
     SmartDashboard.putData("Auto Mode", autoChooser);
   }
 
   private void configureBindings() {
-    SmartDashboard.putData("Test-Choreo-F1", new PathPlannerAuto("C-F1"));
+    SmartDashboard.putData("Test-Choreo-F1", new PathPlannerAuto("Test-Choreo-F1"));
+    SmartDashboard.putData("NiggaPath", new PathPlannerAuto("NiggaPath"));
+    SmartDashboard.putData("Test-PP-F1", new PathPlannerAuto("Test-PP-F1"));
+    SmartDashboard.putData("Test-PP-F1-R", new PathPlannerAuto("Test-PP-F1-R"));
 
     SmartDashboard.putData("Move (2,0)", AutoBuilder.pathfindToPose(
       new Pose2d(-2.0, 0, Rotation2d.fromDegrees(0)),
@@ -55,10 +59,10 @@ public class RobotContainer {
     ));
 
     SmartDashboard.putData("Move ft 1", Commands.runOnce(() -> {
-      Pose2d currentPose = swerve.getPose();
+      Pose2d currentPose = m_swerve.getPose();
       List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
         new Pose2d(currentPose.getTranslation(), new Rotation2d()),
-        new Pose2d(currentPose.getTranslation().plus(new Translation2d(-1.0, 0.0)), new Rotation2d())
+        new Pose2d(currentPose.getTranslation().plus(new Translation2d(1.0, 0.0)), new Rotation2d())
       );
 
       PathPlannerPath path = new PathPlannerPath(

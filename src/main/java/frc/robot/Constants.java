@@ -53,7 +53,7 @@ public final class Constants {
 
   public static final class SwerveConstants {
     public static final double axisDeadBand = 0.05; // make sure ur robot won't vibrate cuz the joystick gives a input like 0.002 or sth
-    public static final int pigeon1 = 0; // advanced gyro
+    public static final int pigeon1 = 1; // advanced gyro. MUST BE 1
     public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
     /* Drivetrain Constants */
@@ -128,8 +128,8 @@ public final class Constants {
     /* Module Specific Constants */
     /* Front Left Module - Module 0 */
     public static final class Mod0 {
-      public static final int driveMotorID = 01;
-      public static final int angleMotorID = 02;
+      public static final int driveMotorID = 1;
+      public static final int angleMotorID = 2;
       public static final int canCoderID = 0;
       public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.291016);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -194,58 +194,6 @@ public final class Constants {
     public static final Translation2d Speaker_red = new Translation2d(8.036, 1.442);
     public static final Translation2d Speaker_blue = new Translation2d(-8.036, 1.442);
     // 0.6775
-  }
-
-  public static final class UpperConstants {
-    public static final int rightLimitSwitchID = 8;
-    public static final int LeftLimitSwitchID = 7;
-
-    public static final int leftElbowMotorID = 17;
-    public static final int rightElbowMotorID = 18;
-    public static final int leftShooterMotorID = 21;
-    public static final int rightShooterMotorID = 20;
-    public static final int elbowCancoderID = 19;
-    public static final int intakeMotorID = 22;
-
-    public static final double elbowCancoderOffset = -0.00709;
-    public static final double shooter_arm_Angle = 135;
-
-    public static final double elbowKP = 10;
-    public static final double elbowKI = 0.0;
-    public static final double elbowKD = 5;
-    public static final double elbowiWindup = 0.0;
-    public static final double elbowiLimit = 0.0;
-
-    public static final double shooterKP = 0.0;
-    public static final double shooterKI = 0.0; // test
-    public static final double shooterKD = 0.0;
-    public static final double shooteriWindup = 0.0; // test
-    public static final double shooteriLimit = 0.0; // test
-
-    // 3/15 -0.01279(upper movement)
-    public static final double ELBOW_DEFAULT_POS = -0.103102; // -0.014987
-    public static final double ELBOW_GROUND_POS = -0.2425;
-    public static final double ELBOW_LFIGHT_POS = -0.235;
-    public static final double ELBOW_AMP_POS = 0.024319; // 1.0.012939 2.-0.002197
-    public static final double ELBOW_BASE_POS = -0.21279;
-    public static final double ELBOW_FAR_POS = -0.19779;
-    public static final double ELBOW_TRAP_POS = -0.2;
-    public static final double ELBOW_PREENDGAME_POS = 0.06221;
-
-    public static final double INTAKE_HOLD_SPEED = 0;
-    public static final double INTAKE_GROUND_SPEED = 0.35;
-    public static final double INTAKE_SHOOT_SPEED = 1;
-
-    public static final double SHOOTER_GROUND_SPEED = 0.03;
-    public static final double SHOOTER_TRAP_SPEED = -0.35;
-    public static final double SHOOTER_SHOOT_SPEED = -1;
-    public static final double SHOOTER_HOLD_SPEED = 0;
-    public static final double SHOOTER_LEGAL_SPEED = 5000;
-
-    public static boolean teleMode = false;
-
-    public static final int ledLength = 33; // need to change
-    public static final int ledPwmPort = 7;
   }
 
   public static final class FieldConstants {

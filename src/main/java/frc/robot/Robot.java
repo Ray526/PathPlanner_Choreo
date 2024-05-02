@@ -4,11 +4,6 @@
 
 package frc.robot;
 
-// import com.choreo.lib.Choreo;
-// import com.choreo.lib.ChoreoTrajectory;
-// import java.util.HashMap;
-// import java.util.Map;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,17 +15,16 @@ import frc.robot.subsystems.Swerve;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  private RobotContainer m_robotContainer = new RobotContainer();
 
-  private final Swerve m_Swerve = new Swerve();
+  // private final Swerve m_Swerve = new Swerve();
 
   private final XboxController driverController = new XboxController(robotConstants.DriverControllerID);
 
-  private final TeleopSwerve teleopSwerve = new TeleopSwerve(m_Swerve, driverController);
+  // private final TeleopSwerve teleopSwerve = new TeleopSwerve(m_Swerve, driverController);
 
   @Override
   public void robotInit() {
-    m_robotContainer = new RobotContainer();
   }
 
   @Override
@@ -74,7 +68,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_Swerve.setDefaultCommand(teleopSwerve);
+    // m_Swerve.setDefaultCommand(teleopSwerve);
     // m_upper.setDefaultCommand(teleopUpper);
     // m_vision.setDefaultCommand(null);
   }
