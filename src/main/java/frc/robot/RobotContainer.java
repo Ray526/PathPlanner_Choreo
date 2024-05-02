@@ -44,7 +44,6 @@ public class RobotContainer {
 
   private void configureBindings() {
     SmartDashboard.putData("Test-Choreo-F1", new PathPlannerAuto("Test-Choreo-F1"));
-    SmartDashboard.putData("NiggaPath", new PathPlannerAuto("NiggaPath"));
     SmartDashboard.putData("Test-PP-F1", new PathPlannerAuto("Test-PP-F1"));
     SmartDashboard.putData("Test-PP-F1-R", new PathPlannerAuto("Test-PP-F1-R"));
 
@@ -58,27 +57,27 @@ public class RobotContainer {
       )
     ));
 
-    SmartDashboard.putData("Move ft 1", Commands.runOnce(() -> {
-      Pose2d currentPose = m_swerve.getPose();
-      List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
-        new Pose2d(currentPose.getTranslation(), new Rotation2d()),
-        new Pose2d(currentPose.getTranslation().plus(new Translation2d(1.0, 0.0)), new Rotation2d())
-      );
+    // SmartDashboard.putData("Move ft 1", Commands.runOnce(() -> {
+    //   Pose2d currentPose = m_swerve.getPose();
+    //   List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
+    //     new Pose2d(currentPose.getTranslation(), new Rotation2d()),
+    //     new Pose2d(currentPose.getTranslation().plus(new Translation2d(1.0, 0.0)), new Rotation2d())
+    //   );
 
-      PathPlannerPath path = new PathPlannerPath(
-        bezierPoints, 
-        new PathConstraints(
-          Constants.SwerveConstants.maxModuleSpeed,
-          Constants.SwerveConstants.maxModuleAccleration,
-          Constants.SwerveConstants.maxAngularVelocity,
-          Constants.SwerveConstants.maxAngularAccleration
-        ),  
-        new GoalEndState(0.0, currentPose.getRotation())
-      );
+    //   PathPlannerPath path = new PathPlannerPath(
+    //     bezierPoints, 
+    //     new PathConstraints(
+    //       Constants.SwerveConstants.maxModuleSpeed,
+    //       Constants.SwerveConstants.maxModuleAccleration,
+    //       Constants.SwerveConstants.maxAngularVelocity,
+    //       Constants.SwerveConstants.maxAngularAccleration
+    //     ),  
+    //     new GoalEndState(0.0, currentPose.getRotation())
+    //   );
 
-      path.preventFlipping = true;
-      AutoBuilder.followPath(path).schedule();
-    }));
+    //   path.preventFlipping = true;
+    //   AutoBuilder.followPath(path).schedule();
+    // }));
   }
 
   public Command getAutonomousCommand() {
