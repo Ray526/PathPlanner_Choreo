@@ -127,7 +127,7 @@ public class SwerveModule extends SubsystemBase {
 
   public SwerveModulePosition getPosition(){
     return new SwerveModulePosition(
-      driveEncoder.getPosition(), 
+      driveEncoder.getPosition(),
       getAngle()
     );
   }

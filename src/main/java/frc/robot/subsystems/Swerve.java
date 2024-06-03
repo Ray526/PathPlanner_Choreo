@@ -63,6 +63,7 @@ public class Swerve extends SubsystemBase {
     );
 
     swerveOdometry = new SwerveDriveOdometry(kinematics, getYaw(), getPositions());
+    
       AutoBuilder.configureHolonomic(
         this::getPose, 
         this::resetPose, 
@@ -76,7 +77,7 @@ public class Swerve extends SubsystemBase {
   
             var alliance = DriverStation.getAlliance();
             if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
+                return alliance.get() == DriverStation.Alliance.Blue;
             }
             return false;
         },
@@ -182,7 +183,6 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     swerveOdometry.update(getYaw(), getPositions());
-    m_field.setRobotPose(getPose());
 
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putNumber("gyro ", getYaw().getDegrees());

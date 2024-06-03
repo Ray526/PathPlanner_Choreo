@@ -52,9 +52,9 @@ public final class Constants {
   // public static UpperState state;
 
   public static final class SwerveConstants {
-    public static final double axisDeadBand = 0.05; // make sure ur robot won't vibrate cuz the joystick gives a input like 0.002 or sth
+    public static final double axisDeadBand = 0.025; // make sure ur robot won't vibrate cuz the joystick gives a input like 0.002 or sth
     public static final int pigeon1 = 1; // advanced gyro. MUST BE 1
-    public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+    public static final boolean invertGyro = false;// Always ensure Gyro is CCW+ CW-
 
     /* Drivetrain Constants */
     public static final double trackWidth = 0.583; // meters, length between two side's wheels, need to adjust
@@ -73,7 +73,7 @@ public final class Constants {
     public static final double voltageComp = 12.0; // setting the nominal voltage(won't really follow anyway)
 
     /* Swerve Current Limiting */
-    public static final int angleContinuousCurrentLimit = 30; //20
+    public static final int angleContinuousCurrentLimit = 20; //20
     public static final int driveContinuousCurrentLimit = 40; //80, limiting the amps so Neo won't brake
 
     /* Angle Motor PID Values */
@@ -91,7 +91,7 @@ public final class Constants {
     /* Drive Motor PID Values */
     public static final double driveKP = 0.12;
     public static final double driveKI = 0.0;
-    public static final double driveKD = 0.0025;
+    public static final double driveKD = 0.0025; 
     public static final double driveKFF = 0.0; // maybe need to adjust
 
     /* Drive Motor Characterization Values */
@@ -105,24 +105,27 @@ public final class Constants {
     public static final double angleConversionFactor = 360.0 / angleGearRatio; // like constants in physics
 
     /* Swerve Profiling Values */
-    public static final double maxModuleSpeed = 4.4; // M/S
-    public static final double maxAngularVelocity = 12;
-    public static final double maxModuleAccleration = 5;
-    public static final double maxAngularAccleration = 5.0;
+    public static final double maxModuleSpeed = 4; // M/S
+    public static final double maxModuleAccleration = 2;
+    public static final double maxAngularVelocity = 360; //540
+    public static final double maxAngularAccleration = 540; //720
 
     /* Neutral Modes */
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
     public static final IdleMode driveNeutralMode = IdleMode.kBrake; // whether u want to let neo stop slowly individually(coast) or fiercely wholely(brake)
 
     /* Motor Inverts */
-    public static final boolean driveInvert = false;
+    public static final boolean driveInvert = true;
     public static final boolean angleInvert = false; // yeah invert the motor
 
     /* Angle Encoder Invert */
     public static final SensorDirectionValue canCoderInvert = SensorDirectionValue.CounterClockwise_Positive; // invert cancoder(in CTREconfig)
 
     /* Field Oriented */
-    public static boolean fieldOriented = false;
+    public static boolean fieldOriented = true;
+
+    /* Slow Mode */
+    public static boolean slow = true;
 
     
     /* Module Specific Constants */
@@ -162,17 +165,17 @@ public final class Constants {
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
 
-    public static final Translation2d LFModuleOffset = new Translation2d(0.4, 0.4);
-    public static final Translation2d RFModuleOffset = new Translation2d(0.4, -0.4);
-    public static final Translation2d LRModuleOffset = new Translation2d(-0.4, 0.4);
-    public static final Translation2d RRModuleOffset = new Translation2d(-0.4, -0.4);
+    public static final Translation2d LFModuleOffset = new Translation2d(0.3, 0.3);
+    public static final Translation2d RFModuleOffset = new Translation2d(0.3, -0.3);
+    public static final Translation2d LRModuleOffset = new Translation2d(-0.3, 0.3);
+    public static final Translation2d RRModuleOffset = new Translation2d(-0.3, -0.3);
 
     public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
       new PIDConstants(0.05, 0, 0), // Translation constants 
       new PIDConstants(0.05, 0, 0), // Rotation constants 
       maxModuleSpeed, 
       LFModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module) 
-      new ReplanningConfig()
+      new ReplanningConfig(true, true)
     );
 
   }

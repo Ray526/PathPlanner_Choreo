@@ -35,12 +35,12 @@ public class TeleopSwerve extends Command {
   public void execute() {
     /* Get Values, Deadband */
     translationVal = translationLimiter.calculate(
-        MathUtil.applyDeadband(driver.getLeftY(), Constants.SwerveConstants.axisDeadBand));
+        MathUtil.applyDeadband(-driver.getLeftY() * 0.5, Constants.SwerveConstants.axisDeadBand));
     strafeVal = strafeLimiter.calculate(
-        MathUtil.applyDeadband(driver.getLeftX(), Constants.SwerveConstants.axisDeadBand));
+        MathUtil.applyDeadband(-driver.getLeftX() * 0.5, Constants.SwerveConstants.axisDeadBand));
     rotationVal = 
       rotationLimiter
-            .calculate(MathUtil.applyDeadband(driver.getRightX() * 0.5, Constants.SwerveConstants.axisDeadBand));
+            .calculate(MathUtil.applyDeadband(-driver.getRightX() * 0.05, Constants.SwerveConstants.axisDeadBand));
 
     if (driver.getBackButton()) {
       s_Swerve.zeroGyro(); 

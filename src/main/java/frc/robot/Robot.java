@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.robotConstants;
@@ -15,16 +16,17 @@ import frc.robot.subsystems.Swerve;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer = new RobotContainer();
+  private RobotContainer m_robotContainer;
 
-  // private final Swerve m_Swerve = new Swerve();
+  private Swerve m_swerve = new Swerve();
 
   private final XboxController driverController = new XboxController(robotConstants.DriverControllerID);
 
-  // private final TeleopSwerve teleopSwerve = new TeleopSwerve(m_Swerve, driverController);
+  private TeleopSwerve teleopSwerve = new TeleopSwerve(m_swerve, driverController);
 
   @Override
   public void robotInit() {
+    m_robotContainer = new RobotContainer();
   }
 
   @Override
@@ -68,9 +70,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    // m_Swerve.setDefaultCommand(teleopSwerve);
-    // m_upper.setDefaultCommand(teleopUpper);
-    // m_vision.setDefaultCommand(null);
+    m_swerve.setDefaultCommand(teleopSwerve);
   }
 
   @Override
@@ -80,7 +80,9 @@ public class Robot extends TimedRobot {
   public void teleopExit() {}
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+    CommandScheduler.getInstance().cancelAll();
+  }
 
   @Override
   public void testPeriodic() {}

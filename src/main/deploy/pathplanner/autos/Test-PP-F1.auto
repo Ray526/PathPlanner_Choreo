@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3842846515935527,
+      "x": 1.3725738150477713,
       "y": 5.550936522700434
     },
     "rotation": 0
@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "F1"
+            "pathName": "P-F1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "F1-R1-B1-L1"
           }
         }
       ]
