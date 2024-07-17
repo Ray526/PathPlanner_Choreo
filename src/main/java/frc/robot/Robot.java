@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+// import com.pathplanner.lib.commands.PathfindingCommand;
+// import com.pathplanner.lib.pathfinding.Pathfinder;
+// import com.pathplanner.lib.pathfinding.Pathfinding;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.robotConstants;
@@ -17,12 +20,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
-  private Swerve m_swerve = new Swerve();
-
-  private final XboxController driverController = new XboxController(robotConstants.DriverControllerID);
-
-  private TeleopSwerve teleopSwerve = new TeleopSwerve(m_swerve, driverController);
 
   @Override
   public void robotInit() {
@@ -52,7 +49,6 @@ public class Robot extends TimedRobot {
     robotConstants.mode = "AUTO";
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
@@ -70,7 +66,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_swerve.setDefaultCommand(teleopSwerve);
   }
 
   @Override

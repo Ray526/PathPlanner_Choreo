@@ -6,7 +6,6 @@ package frc.robot;
 
 import java.util.List;
 
-import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -23,55 +22,83 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.robotConstants;
-import frc.robot.commands.DoNothing;
+import frc.robot.commands.BASE;
+import frc.robot.commands.GROUND;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.TeleopUpper;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.UpperSub;
 
 public class RobotContainer {
 
-  // private final Swerve m_swerve = new Swerve();
+  private final Swerve m_Swerve = new Swerve();
+  private final UpperSub m_Upper = new UpperSub();
 
-  private final XboxController controller = new XboxController(robotConstants.DriverControllerID);
+  private final XboxController driverController = new XboxController(robotConstants.DriverControllerID);
 
-  // private final TeleopSwerve teleopSwerve = new TeleopSwerve(m_swerve, controller);
+  private final TeleopSwerve teleopSwerve = new TeleopSwerve(m_Swerve, driverController);
+  private final TeleopUpper teleopUpper = new TeleopUpper(m_Upper, driverController);
 
-  private final SendableChooser<Command> autoChooser;
+  public final SendableChooser<Command> autoChooser;
 
-  private final Command DoNothing = new DoNothing();
+  private Command GROUND = new GROUND(m_Upper);
+  private Command BASE = new BASE(m_Upper);
 
   public RobotContainer() {
-
-    NamedCommands.registerCommand("SPEAKER", DoNothing);
-    NamedCommands.registerCommand("GROUND", DoNothing);
-    NamedCommands.registerCommand("SHOOT", DoNothing);
-    NamedCommands.registerCommand("AutoAim", DoNothing);
-    NamedCommands.registerCommand("AutoUpper", DoNothing);
+    NamedCommands.registerCommand("GROUND", GROUND);
+    NamedCommands.registerCommand("BASE", BASE);
     
     configureBindings();
 
-    // m_swerve.setDefaultCommand(teleopSwerve);
-
     autoChooser = AutoBuilder.buildAutoChooser();
-
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    
+    SmartDashboard.putData("Autos", autoChooser);
+    
+    m_Swerve.setDefaultCommand(teleopSwerve);
+    m_Upper.setDefaultCommand(teleopUpper);
   }
 
   private void configureBindings() {
     SmartDashboard.putData("Test-Choreo-F1", new PathPlannerAuto("Test-Choreo-F1"));
-    SmartDashboard.putData("Test-PP-F1", new PathPlannerAuto("Test-PP-F1"));
-    SmartDashboard.putData("PP-F1-T90", new PathPlannerAuto("PP-F1-T90"));
+    SmartDashboard.putData("Test-PP-S", new PathPlannerAuto("Test-PP-S"));
+    SmartDashboard.putData("PP-F1", new PathPlannerAuto("PP-F1"));
+    SmartDashboard.putData("S-curve", new PathPlannerAuto("S-curve"));
+    SmartDashboard.putData("S-curve-2", new PathPlannerAuto("S-curve-2"));
+    SmartDashboard.putData("X1", new PathPlannerAuto("X1"));
+    SmartDashboard.putData("X1-X2-X3", new PathPlannerAuto("X1-X2-X3"));
 
-    SmartDashboard.putData("Move (1,0)", AutoBuilder.pathfindToPose(
-      new Pose2d(-.0, 0, Rotation2d.fromDegrees(0)),
-      new PathConstraints(
-        Constants.SwerveConstants.maxModuleSpeed,
-        Constants.SwerveConstants.maxModuleAccleration,
-        Constants.SwerveConstants.maxAngularVelocity,
-        Constants.SwerveConstants.maxAngularAccleration
-      )
-    ));
+    // SmartDashboard.putData("Move (1,0)", AutoBuilder.pathfindToPose(
+    //   new Pose2d(-.0, 0, Rotation2d.fromDegrees(0)),
+    //   new PathConstraints(
+    //     Constants.SwerveConstants.maxModuleSpeed,
+    //     Constants.SwerveConstants.maxModuleAccleration,
+    //     Constants.SwerveConstants.maxAngularVelocity,
+    //     Constants.SwerveConstants.maxAngularAccleration
+    //   )
+    // ));
+        SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+      Pose2d currentPose = m_Swerve.getPose();
+      
+      // The rotation component in these poses represents the direction of travel
+      Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+      Pose2d targetPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
+
+      List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, targetPos);
+      PathPlannerPath path = new PathPlannerPath(
+        bezierPoints, 
+        new PathConstraints(
+          4.0, 4.0, 
+          Units.degreesToRadians(360), Units.degreesToRadians(540)
+        ),  
+        new GoalEndState(0.0, currentPose.getRotation())
+      );
+
+      // Prevent this path from being flipped on the red alliance, since the given positions are already correct
+      path.preventFlipping = true;
+
+      AutoBuilder.followPath(path).schedule();
+    }));
   }
 
   public Command getAutonomousCommand() {

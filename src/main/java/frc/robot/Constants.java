@@ -11,10 +11,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import frc.lib.config.SwerveModuleConstants;
 
@@ -105,7 +102,7 @@ public final class Constants {
     public static final double angleConversionFactor = 360.0 / angleGearRatio; // like constants in physics
 
     /* Swerve Profiling Values */
-    public static final double maxModuleSpeed = 4; // M/S
+    public static final double maxModuleSpeed = 3; // M/S
     public static final double maxModuleAccleration = 2;
     public static final double maxAngularVelocity = 360; //540
     public static final double maxAngularAccleration = 540; //720
@@ -145,7 +142,8 @@ public final class Constants {
       public static final int canCoderID = 1;
       public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.167236);
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
-    }
+    }       
+    
 
     /* Rear Left Module - Module 2 */
     public static final class Mod2 {
@@ -171,8 +169,8 @@ public final class Constants {
     public static final Translation2d RRModuleOffset = new Translation2d(-0.3, -0.3);
 
     public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-      new PIDConstants(0.05, 0, 0), // Translation constants 
-      new PIDConstants(0.05, 0, 0), // Rotation constants 
+      new PIDConstants(3, 0, 0.005), // Translation constants 
+      new PIDConstants(0.5, 0, 0), // Rotation constants 
       maxModuleSpeed, 
       LFModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module) 
       new ReplanningConfig(true, true)
@@ -180,39 +178,125 @@ public final class Constants {
 
   }
 
-  public static final class VisionConstants {
-    public static final Translation3d zeroTranslation3d = new Translation3d(0, 0, 0);
-    public static final Transform3d zeroTransform3d = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
-
-    public static final double[][] data = {
-      {0.6775, -0.204589},
-      {1.6775, -0.002197},
-      {2.1775, -0.002197},
-      {2.6775, -0.002197},
-      {3.1775, -0.002197},
-      {3.6775, -0.002197},
-      {4.1775, -0.002197}
-    };
-
-    public static final Translation2d Speaker_red = new Translation2d(8.036, 1.442);
-    public static final Translation2d Speaker_blue = new Translation2d(-8.036, 1.442);
-    // 0.6775
+  public static enum UpperState {
+    DEFAULT,
+    GROUND,
+    AMP,
+    BASE,
+    FAR,
+    FLIGHT,
+    MGROUND,
+    SHOOT,
+    TRAP,
+    NULL,
+    PREENDGAME,
+    ENDGAME
   }
 
-  public static final class FieldConstants {
-    // auto position values
-    // global
-    public static final double shootingTime = 0.5;
-    public static final double intakeTime = 3;
-    public static final double holdTime = 2;
+  public static UpperState state;
 
-    // left speaker
-    public static final double leftSpeakerOffset = 90;
+  public static final class UpperConstants {
+    public static final int rightLimitSwitchID = 8;
+    public static final int LeftLimitSwitchID = 7;
 
-    // mid speaker
-    public static final double midSpeakerOffset = 0;
+    public static final int leftElbowMotorID = 17;
+    public static final int rightElbowMotorID = 18;
+    public static final int leftShooterMotorID = 41;
+    public static final int rightShooterMotorID = 42;
+    public static final int elbowCancoderID = 4;
+    public static final int intakeMotorID = 43;
 
-    // right speakerd
-    public static final double rightSpeakerOffset = 90;
+    public static final double elbowCancoderOffset = -0.00709;
+    public static final double shooter_arm_Angle = 135;
+
+    public static final double elbowKP = 10;
+    public static final double elbowKI = 0.0;
+    public static final double elbowKD = 5;
+    public static final double elbowiWindup = 0.0;
+    public static final double elbowiLimit = 0.0;
+
+    public static final double shooterKP = 0.0;
+    public static final double shooterKI = 0.0; // test
+    public static final double shooterKD = 0.0;
+    public static final double shooteriWindup = 0.0; // test
+    public static final double shooteriLimit = 0.0; // test
+
+    // 3/15 -0.01279(upper movement)
+    public static final double ELBOW_DEFAULT_POS = -0.120504; // -0.014987
+    public static final double ELBOW_GROUND_POS = -0.245098;//-0.2425 -0.017402
+    public static final double ELBOW_FLIGHT_POS = -0.251402;
+    public static final double ELBOW_AMP_POS = 0.006917; // 1.0.012939 2.-0.002197
+    public static final double ELBOW_BASE_POS = -0.230192;
+    public static final double ELBOW_FAR_POS = -0.037181;
+    public static final double ELBOW_TRAP_POS = -0.217;
+    public static final double ELBOW_PREENDGAME_POS = 0.06221;
+
+    public static final double INTAKE_HOLD_SPEED = 0;
+    public static final double INTAKE_GROUND_SPEED = -0.45;
+    public static final double INTAKE_SHOOT_SPEED = -1;
+
+    public static final double SHOOTER_GROUND_SPEED = 0.03;
+    public static final double SHOOTER_TRAP_SPEED = -0.35;
+    public static final double SHOOTER_SHOOT_SPEED = -0.85;
+    public static final double SHOOTER_HOLD_SPEED = 0;
+    public static final double SHOOTER_LEGAL_SPEED = 5000;
+
+    public static boolean teleMode = false;
+
+    public static final int ledLength = 33; // need to change
+    public static final int ledPwmPort = 7;
+  }
+
+
+  // public static final class VisionConstants {
+  //   public static final Translation3d zeroTranslation3d = new Translation3d(0, 0, 0);
+  //   public static final Transform3d zeroTransform3d = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+
+  //   public static final double[][] data = {
+  //     {0.6775, -0.204589},
+  //     {1.6775, -0.002197},
+  //     {2.1775, -0.002197},
+  //     {2.6775, -0.002197},
+  //     {3.1775, -0.002197},
+  //     {3.6775, -0.002197},
+  //     {4.1775, -0.002197}
+  //   };
+
+  //   public static final Translation2d Speaker_red = new Translation2d(8.036, 1.442);
+  //   public static final Translation2d Speaker_blue = new Translation2d(-8.036, 1.442);
+  //   // 0.6775
+  // }
+
+  // public static final class FieldConstants {
+  //   // auto position values
+  //   // global
+  //   public static final double shootingTime = 0.5;
+  //   public static final double intakeTime = 3;
+  //   public static final double holdTime = 2;
+
+  //   // left speaker
+  //   public static final double leftSpeakerOffset = 90;
+
+  //   // mid speaker
+  //   public static final double midSpeakerOffset = 0;
+
+  //   // right speakerd
+  //   public static final double rightSpeakerOffset = 90;
+  // }
+
+  public static final class LimeLight {
+    public static final double KPDefault = 0.013;
+    public static final double KIDefault = 0.0;
+    public static final double KDDefault = 0.01;
+    public static final double WindupDefault = 0;
+    public static final double LimitDefault = 0;
+    public static final double SmoothDefault = 0.75;
+
+    public static final String KPKey = "kp";
+    public static final String KIKey = "ki";
+    public static final String KDKey = "kd";
+    public static final String WindupKey = "wind";
+    public static final String LimKey = "lim";
+    public static final String SmoothKey = "smooth"; 
   }
 }
