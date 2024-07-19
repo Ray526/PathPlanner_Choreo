@@ -223,8 +223,8 @@ public final class Constants {
 
     // 3/15 -0.01279(upper movement)
     public static final double ELBOW_DEFAULT_POS = -0.120504; // -0.014987
-    public static final double ELBOW_GROUND_POS = -0.245098;//-0.2425 -0.017402
-    public static final double ELBOW_FLIGHT_POS = -0.251402;
+    public static final double ELBOW_GROUND_POS = -0.235849765625;//-0.2425 -0.017402
+    public static final double ELBOW_FLIGHT_POS = -0.237;
     public static final double ELBOW_AMP_POS = 0.006917; // 1.0.012939 2.-0.002197
     public static final double ELBOW_BASE_POS = -0.230192;
     public static final double ELBOW_FAR_POS = -0.037181;
@@ -239,7 +239,7 @@ public final class Constants {
     public static final double SHOOTER_TRAP_SPEED = -0.35;
     public static final double SHOOTER_SHOOT_SPEED = -0.85;
     public static final double SHOOTER_HOLD_SPEED = 0;
-    public static final double SHOOTER_LEGAL_SPEED = 5000;
+    public static final double SHOOTER_LEGAL_SPEED = 3800;
 
     public static boolean teleMode = false;
 
@@ -285,7 +285,7 @@ public final class Constants {
   // }
 
   public static final class LimeLight {
-    public static final double KPDefault = 0.013;
+    public static final double KPDefault = 0.012; // 0.013
     public static final double KIDefault = 0.0;
     public static final double KDDefault = 0.01;
     public static final double WindupDefault = 0;

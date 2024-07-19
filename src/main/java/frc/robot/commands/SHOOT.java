@@ -57,8 +57,8 @@ public class SHOOT extends Command {
   private final UpperSub s_Upper;
     
   private double elbowAngle;
-  private double intakeSpeed;
-  private double shooterSpeed;
+  private double intakeSpeed = -1;
+  private double shooterSpeed = -0.7;
 
   private final PID elbowPID = new PID(
     UpperConstants.elbowKP,
@@ -118,12 +118,19 @@ public class SHOOT extends Command {
         true);
 
     /* Upper */
-    double tzInput = tx.getDouble(0.0);
+    double tzInput = tpcs.getDoubleArray(new double[6])[2];
     double degOutput = PolynomialRegression.predictDeg(tzInput);
-    shooterSpeed = 0.7;
-
+    if (tzInput >= 0.01) {
     s_Upper.setElbow(-elbowPID.calculate(degOutput - s_Upper.getElbowRotation()));
+    // System.out.println(s_Upper.getElbowRotation());
+    // System.out.println(degOutput);
     s_Upper.setShooter(shooterSpeed);
+    if(timer.get() >= 3.5 && s_Upper.hasNote()) {
+    s_Upper.setIntake(intakeSpeed);}
+    } else {
+    s_Upper.setElbow(0);
+    s_Upper.setIntake(0);
+    }
   }
 
   @Override
@@ -134,7 +141,7 @@ public class SHOOT extends Command {
 
   @Override
   public boolean isFinished() {
-    if (timer.get() >= 1) {
+    if (timer.get() >= 5) {
     return true;
     } else {
       return false;
