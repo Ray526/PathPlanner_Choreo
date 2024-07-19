@@ -49,7 +49,7 @@ public final class Constants {
   // public static UpperState state;
 
   public static final class SwerveConstants {
-    public static final double axisDeadBand = 0.025; // make sure ur robot won't vibrate cuz the joystick gives a input like 0.002 or sth
+    public static final double axisDeadBand = 0.01; // make sure ur robot won't vibrate cuz the joystick gives a input like 0.002 or sth
     public static final int pigeon1 = 1; // advanced gyro. MUST BE 1
     public static final boolean invertGyro = false;// Always ensure Gyro is CCW+ CW-
 
@@ -104,8 +104,8 @@ public final class Constants {
     /* Swerve Profiling Values */
     public static final double maxModuleSpeed = 3; // M/S
     public static final double maxModuleAccleration = 2;
-    public static final double maxAngularVelocity = 360; //540
-    public static final double maxAngularAccleration = 540; //720
+    public static final double maxAngularVelocity = 270; //540
+    public static final double maxAngularAccleration = 360; //720
 
     /* Neutral Modes */
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;

@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -33,8 +34,8 @@ public class SHOOT extends Command {
   private SlewRateLimiter strafeLimiter = new SlewRateLimiter(3.0);
   private SlewRateLimiter rotationLimiter = new SlewRateLimiter(3.0);
 
-  private double translationVal;
-  private double strafeVal;
+  private double translationVal = 0;
+  private double strafeVal = 0;
   private double rotationVal;
   private double ema;
 
@@ -72,11 +73,9 @@ public class SHOOT extends Command {
 
   public SHOOT(Swerve s_Swerve, UpperSub s_Upper, VisionSub s_Vision) {
     this.s_Swerve = s_Swerve;
-    this.s_Vision = s_Vision;
     this.s_Upper = s_Upper;
-    addRequirements(s_Upper);
-    addRequirements(s_Swerve);
-    addRequirements(s_Vision);
+    this.s_Vision = s_Vision;
+    addRequirements(s_Upper, s_Swerve, s_Vision);
   }
 
   @Override
@@ -84,6 +83,8 @@ public class SHOOT extends Command {
     Constants.state = UpperState.DEFAULT;
     elbowAngle = UpperConstants.ELBOW_DEFAULT_POS;
     timer.reset();
+    timer.start();
+    System.out.println("SHOOT start");
   }
 
   @Override
@@ -112,7 +113,7 @@ public class SHOOT extends Command {
 
     /* Drive */
     s_Swerve.drive(
-        new Translation2d(translationVal, strafeVal).times(Constants.SwerveConstants.maxModuleSpeed),
+        new Translation2d(0, 0),
         rotationVal * Constants.SwerveConstants.maxAngularVelocity, true,
         true);
 
@@ -123,18 +124,18 @@ public class SHOOT extends Command {
 
     s_Upper.setElbow(-elbowPID.calculate(degOutput - s_Upper.getElbowRotation()));
     s_Upper.setShooter(shooterSpeed);
-
-    /* Timer */
-    timer.restart();
   }
 
   @Override
-  public void end(boolean interrupted){}
+  public void end(boolean interrupted){
+    s_Swerve.drive(new Translation2d(0,0), 0, true, false);
+    System.out.println("SHOOT end");
+  }
 
   @Override
   public boolean isFinished() {
-    if (timer.get() == 2) {
-    return false;
+    if (timer.get() >= 1) {
+    return true;
     } else {
       return false;
     }

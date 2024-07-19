@@ -8,35 +8,50 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.37,
-        "y": 5.55
+        "x": 2.250886555981385,
+        "y": 5.867129109436536
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.7147411242040724,
-        "y": 6.979658581285779
+        "x": 3.503946066380006,
+        "y": 6.37069508090514
       },
       "prevControl": {
-        "x": 2.7147411242040724,
-        "y": 6.979658581285779
+        "x": 2.508524959988578,
+        "y": 6.1716108596268535
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
     {
-      "waypointRelativePos": 0.15,
-      "rotationDegrees": 0,
-      "rotateFast": true
+      "name": "T-Aim init",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "T-Aim end",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
     }
   ],
-  "constraintZones": [],
-  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.5,
     "maxAcceleration": 1.5,
@@ -45,14 +60,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -139.95544894005224,
+    "rotation": -1.7899106082460696,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Test",
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
-  },
+  "previewStartingState": null,
   "useDefaultConstraints": true
 }

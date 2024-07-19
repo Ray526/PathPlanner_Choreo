@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.robotConstants;
 import frc.robot.commands.AimbotSwerve;
 import frc.robot.commands.SHOOT;
@@ -49,11 +51,9 @@ public class RobotContainer {
   public final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
-    NamedCommands.registerCommand("GROUND", new GROUND(m_Upper));
-    NamedCommands.registerCommand("BASE",new BASE(m_Upper));
-    NamedCommands.registerCommand("SHOOT", new SHOOT(m_Swerve, m_Upper, m_Vision));
-    NamedCommands.registerCommand("AIM", null);
-    NamedCommands.registerCommand("SPEAKER", null);
+    // NamedCommands.registerCommand("GROUND", new GROUND(m_Upper));
+    // NamedCommands.registerCommand("BASE",new BASE(m_Upper));
+    // NamedCommands.registerCommand("SPEAKER", new RunCommand(()->{}, m_Vision));
     
     configureBindings();
 
@@ -66,6 +66,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+
     // SmartDashboard.putData("Test-Choreo-F1", new PathPlannerAuto("Test-Choreo-F1"));
     // SmartDashboard.putData("Test-PP-S", new PathPlannerAuto("Test-PP-S"));
     // SmartDashboard.putData("PP-F1", new PathPlannerAuto("PP-F1"));
@@ -105,13 +106,16 @@ public class RobotContainer {
     //   );
 
     //   // Prevent this path from being flipped on the red alliance, since the given positions are already correct
-    //   path.preventFlipping = true;
+    //   path.preventFlipping = tru e;
 
     //   AutoBuilder.followPath(path).schedule();
     // }));
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return new SequentialCommandGroup(
+      autoChooser.getSelected(),
+      new SHOOT(m_Swerve, m_Upper, m_Vision)
+    );
   }
 }
