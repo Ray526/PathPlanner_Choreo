@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.75,
+        "y": 6.7
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.3586179638726996,
+        "y": 6.791996364261787
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4382599407138885,
+        "y": 4.1
+      },
+      "prevControl": {
+        "x": 1.8584553730330042,
+        "y": 4.5785688495143795
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "L-X3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 13.5,
+    "maxAngularAcceleration": 15.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "LeftStarting",
+  "previewStartingState": {
+    "rotation": 60.11848876014234,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

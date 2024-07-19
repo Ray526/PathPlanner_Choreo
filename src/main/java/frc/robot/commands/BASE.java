@@ -17,8 +17,8 @@ public class BASE extends Command {
   private double intakeSpeed;
   private double shooterSpeed;
 
-  private boolean m_CancelCommand;
-  private boolean shot;
+  private Timer timer = new Timer();
+  private double time;
 
   private final PID elbowPID = new PID(
       UpperConstants.elbowKP,
@@ -35,7 +35,7 @@ public class BASE extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_CancelCommand = false;
+    timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,14 +47,11 @@ public class BASE extends Command {
     if(Math.abs(s_Upper.getShooterRPM()) > UpperConstants.SHOOTER_LEGAL_SPEED) {
       s_Upper.setLED(0,255,0);
       intakeSpeed = 1;
-      Timer.delay(2);
-      shot = true;
+      s_Upper.setIntake(intakeSpeed);
+      timer.start();
+      time = timer.get();
     }
     else s_Upper.charge(255,0,0, false);
-
-    if (shot) {
-      m_CancelCommand = true;
-    }
 
     s_Upper.setElbow(-elbowPID.calculate(elbowAngle - s_Upper.getElbowRotation()));
     s_Upper.setShooter(shooterSpeed);
@@ -63,11 +60,18 @@ public class BASE extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    s_Upper.setIntake(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_CancelCommand;
+    if (time == 2) {
+    s_Upper.setIntake(0);
+    return true;} 
+    else {
+      return false;
+    }
   }
 }

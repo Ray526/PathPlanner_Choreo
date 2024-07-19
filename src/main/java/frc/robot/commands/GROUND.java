@@ -16,8 +16,6 @@ public class GROUND extends Command {
   private double intakeSpeed;
   private double shooterSpeed;
 
-  private boolean m_CancelCommand;
-
   private final PID elbowPID = new PID(
       UpperConstants.elbowKP,
       UpperConstants.elbowKI,
@@ -32,9 +30,7 @@ public class GROUND extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_CancelCommand = false;
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -44,7 +40,6 @@ public class GROUND extends Command {
     shooterSpeed = UpperConstants.SHOOTER_GROUND_SPEED;
     if(s_Upper.hasNote()) s_Upper.setLED(12,41,235);
     else s_Upper.blink(12,41,235);
-    if(s_Upper.hasNote()) m_CancelCommand = true;
 
     s_Upper.setElbow(-elbowPID.calculate(elbowAngle - s_Upper.getElbowRotation()));
     s_Upper.setShooter(shooterSpeed);
@@ -58,6 +53,10 @@ public class GROUND extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_CancelCommand;
+    if (s_Upper.hasNote()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
